@@ -17,6 +17,13 @@
 # vercel
 .vercel
 
+# local data
+/data/
+
+# ralio
+ralio-key.pem
+scripts/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -15,8 +15,6 @@ export async function POST(req: Request) {
         for await (const event of ralio.chat.stream({ message })) {
           if (event.event === "text_delta") {
             controller.enqueue(encoder.encode(event.text));
-          } else if (event.event === "tool_started") {
-            controller.enqueue(encoder.encode(`\n[${event.data.tool_name}]\n`));
           }
         }
       } catch (err) {

@@ -15,6 +15,21 @@ export async function verifyWork(
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
+    tools: [
+      {
+        name: "submit_verification",
+        description: "Submit the verification result for the submitted work",
+        input_schema: {
+          type: "object" as const,
+          properties: {
+            approved: { type: "boolean", description: "Whether the work meets the requirements" },
+            reasoning: { type: "string", description: "Explanation of the decision" },
+          },
+          required: ["approved", "reasoning"],
+        },
+      },
+    ],
+    tool_choice: { type: "tool", name: "submit_verification" },
     messages: [
       {
         role: "user",
@@ -22,14 +37,12 @@ export async function verifyWork(
 
 Job Title: ${jobTitle}
 Job Requirements: ${jobDescription}
-Submitted Work: ${submittedWork}
-
-Respond with valid JSON only (no markdown, no code fences):
-{ "approved": boolean, "reasoning": string }`,
+Submitted Work: ${submittedWork}`,
       },
     ],
   });
 
-  const text = (response.content[0] as Anthropic.TextBlock).text;
-  return JSON.parse(text) as VerificationResult;
+  const toolUse = response.content.find((b) => b.type === "tool_use") as Anthropic.ToolUseBlock;
+  if (!toolUse) throw new Error("No verification result returned from Claude");
+  return toolUse.input as VerificationResult;
 }

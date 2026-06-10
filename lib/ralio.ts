@@ -16,6 +16,7 @@ export async function getRalioClient(): Promise<RalioClient> {
   client = await RalioClient.create({
     clientId: process.env.RALIO_CLIENT_ID,
     privateKeyPath: keyPath,
+    timeoutMs: 120000,
   });
 
   return client;
