@@ -48,12 +48,20 @@ export default function DashboardPage() {
             </Link>
             <h1 className="text-3xl font-bold mt-2">Dashboard</h1>
           </div>
-          <Link
-            href="/jobs/new"
-            className="bg-white text-gray-950 font-semibold px-5 py-2.5 rounded-lg hover:bg-gray-100 transition-colors text-sm"
-          >
-            Post a Job
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href="/chat"
+              className="border border-gray-700 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-gray-900 transition-colors text-sm"
+            >
+              Ralio Agent
+            </Link>
+            <Link
+              href="/jobs/new"
+              className="bg-white text-gray-950 font-semibold px-5 py-2.5 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+            >
+              Post a Job
+            </Link>
+          </div>
         </div>
 
         {/* Jobs */}

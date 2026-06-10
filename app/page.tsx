@@ -42,6 +42,12 @@ export default function Home() {
           >
             Dashboard
           </Link>
+          <Link
+            href="/chat"
+            className="border border-gray-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-900 transition-colors"
+          >
+            Ralio Agent
+          </Link>
         </div>
       </div>
     </main>
