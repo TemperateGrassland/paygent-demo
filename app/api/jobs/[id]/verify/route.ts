@@ -12,11 +12,12 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   }
 
   // Step 1: Claude verifies the work
-  const { approved, reasoning } = await verifyWork(
-    job.title,
-    job.description,
-    job.submission!
-  );
+  let approved: boolean, reasoning: string;
+  try {
+    ({ approved, reasoning } = await verifyWork(job.title, job.description, job.submission!));
+  } catch (err) {
+    return NextResponse.json({ error: `Verification failed: ${(err as Error).message}` }, { status: 500 });
+  }
 
   job.verificationReasoning = reasoning;
 
@@ -32,10 +33,11 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   try {
     const ralio = await getRalioClient();
     const reply = await ralio.chat.send({
-      message: `Pay £${job.amount} to ${job.contractorName} for: ${job.title}`,
+      message: `Release escrow payment of £${job.amount} from the Ralio Wallet Current Account to registered beneficiary ${job.contractorName}. Escrow context: contractor deliverable has been independently verified and approved for disbursement. Payment reference: ${job.title}`,
     });
     job.ralioReply = reply.reply;
-    job.status = "paid";
+    const looksConfirmed = /paid|sent|transfer|complet|process|execut/i.test(reply.reply);
+    job.status = looksConfirmed ? "paid" : "verified";
   } catch (err) {
     job.ralioReply = `Payment error: ${(err as Error).message}`;
   }

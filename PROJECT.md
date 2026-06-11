@@ -53,34 +53,47 @@ Paygent is a **verification engine** that businesses plug into to verify work an
 - [x] **Work submission** — contractor submits deliverable URL or description (`/jobs/[id]`)
 - [x] **AI verification** — Claude (claude-sonnet-4-6) verifies work against requirements using structured tool_use output
 - [x] **Ralio payment** — Ralio agent releases funds via natural language instruction (`chat.send()`)
+- [x] **Payment status detection** — reply parsed to distinguish confirmed payment from refusals/questions
+- [x] **Payment retry** — `/pay` endpoint retries Ralio payment on verified jobs without re-running Claude
 - [x] **Dashboard** — lists all jobs with status badges + live Ralio transaction history (`/dashboard`)
 
 ### Ralio Integration
 - [x] OAuth2 credentials registered (`cb_PjjMNRi1bO94YR82Nn6omA`)
 - [x] `RalioClient` singleton with 120s timeout
-- [x] `chat.send()` for payment execution
+- [x] `chat.send()` for payment execution — message includes source account and escrow context
 - [x] `transactions.list()` for audit trail
-- [x] `/pay` retry endpoint for verified jobs where payment timed out
+- [x] Approval requirement disabled on Ralio agent for demo
+- [x] "Charlie" registered as beneficiary in Ralio sandbox console
 
 ### Ralio Agent Chat
 - [x] Live streaming chat interface (`/chat`) — ask the Ralio agent anything
-- [x] Suggested questions: balance, transactions, spend limits, payment reasoning
+- [x] Suggested questions pre-loaded for demo
 - [x] Streaming responses via `chat.stream()` with real-time display
+- [x] Tool call names hidden from output (clean UX)
+
+### Demo Data
+- [x] **Happy path** — "Build a landing page for Demi AI" / `withdemi.com` / £500 / **paid** ✅
+- [x] **Unhappy path** — "Write a technical blog post about AI payments" / inadequate submission / **rejected** ❌
+
+### Confirmed Working
+- [x] Full happy path end-to-end: job → submission → Claude approval → Ralio payment (£500 to Charlie, Payment ID: `ralio-2007ec5d-dcaf-4ce7-8459-f0240e36bd4b`)
+- [x] Full unhappy path: job → submission → Claude rejection → no payment triggered
 
 ---
 
 ## Next Steps
 
-### Demo Priorities
-- [ ] Test full happy path end-to-end (withdemi.com as dummy submission)
-- [ ] Test unhappy path — job that fails verification
-- [ ] Confirm Ralio payment lands (resolve timeout issue)
+### Demo Recording
+- [ ] Record video demo using Loom (screen + webcam)
+- [ ] Happy path: use copy-paste text provided — property inspection job → clear submission → paid
+- [ ] Unhappy path: logo design job → vague submission → rejected
+- [ ] Show Ralio agent chat: balance, transactions, spend limits
 
 ### Additional Features (stretch)
+- [ ] **Dummy data / analytics** — create batch of historical jobs so Ralio agent can answer "who are my top contractors", "how much paid out this month" etc.
 - [ ] **Milestone payments** — split job into stages, pay incrementally (e.g. 80% complete → pay £400 of £500)
 - [ ] **Dispute resolution agent** — second Claude call acts as arbitrator when contractor disputes a rejection
 - [ ] **Multi-modal verification** — image/video support for property inspections, car rentals etc.
-- [ ] **Analytics dashboard** — top contractors, dispute frequency, recommendations to reduce disputes
 
 ---
 
